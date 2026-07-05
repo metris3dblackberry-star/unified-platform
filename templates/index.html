@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ shell_title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="video-backdrop" aria-hidden="true">
+    {% for video_url in background_videos %}
+      <video class="bg-video bg-video-{{ loop.index }}" autoplay muted loop playsinline preload="metadata">
+        <source src="{{ video_url }}" type="video/mp4">
+      </video>
+    {% endfor %}
+    <div class="video-overlay"></div>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Kozos platform</p>
+        <h1>{{ shell_title }}</h1>
+        <p class="subtle">Egy belépőfelület, két rendszer, közvetlen Railway beágyazással.</p>
+      </div>
+      <div class="actions">
+        <a href="{{ crm_url }}" target="_blank" rel="noreferrer">CRM uj ful</a>
+        <a href="{{ erp_url }}" target="_blank" rel="noreferrer">ERP uj ful</a>
+        <a href="/health" target="_blank" rel="noreferrer">Allapot</a>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Platform valaszto">
+      <button class="tab is-active" data-target="crm-panel">CRM</button>
+      <button class="tab" data-target="erp-panel">ERP</button>
+    </nav>
+
+    <main class="panels">
+      <section id="crm-panel" class="panel is-active">
+        <div class="browser-window">
+          <div class="browser-bar">
+            <div class="browser-controls" aria-hidden="true">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="browser-address">{{ crm_url }}</div>
+            <a class="browser-open" href="{{ crm_url }}" target="_blank" rel="noreferrer">Megnyit</a>
+          </div>
+          <div class="browser-frame">
+            <iframe title="CRM" src="{{ crm_url }}" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section id="erp-panel" class="panel">
+        <div class="browser-window">
+          <div class="browser-bar">
+            <div class="browser-controls" aria-hidden="true">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="browser-address">{{ erp_url }}</div>
+            <a class="browser-open" href="{{ erp_url }}" target="_blank" rel="noreferrer">Megnyit</a>
+          </div>
+          <div class="browser-frame">
+            <iframe title="ERP" src="{{ erp_url }}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll(".tab");
+    const panels = document.querySelectorAll(".panel");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const targetId = tab.dataset.target;
+        tabs.forEach((item) => item.classList.toggle("is-active", item === tab));
+        panels.forEach((panel) => panel.classList.toggle("is-active", panel.id === targetId));
+      });
+    });
+  </script>
+</body>
+</html>
