@@ -8,6 +8,11 @@ from flask import Flask, render_template, send_from_directory
 def create_app() -> Flask:
     app = Flask(__name__)
     outputs_dir = Path(__file__).resolve().parent
+    available_videos = [
+        f"/media/{filename}"
+        for filename in ("CRM.mp4", "numbers.mp4", "SAP.mp4")
+        if (outputs_dir / filename).exists()
+    ]
 
     crm_public_url = os.environ.get(
         "CRM_PUBLIC_URL",
@@ -26,11 +31,7 @@ def create_app() -> Flask:
             shell_title=shell_title,
             crm_url=crm_public_url,
             erp_url=erp_public_url,
-            background_videos=[
-                "/media/CRM.mp4",
-                "/media/numbers.mp4",
-                "/media/SAP.mp4",
-            ],
+            background_videos=available_videos,
         )
 
     @app.get("/media/<path:filename>")
@@ -65,6 +66,6 @@ def _probe(url: str) -> str:
 
 if __name__ == "__main__":
     app = create_app()
-    host = os.environ.get("HOST", "127.0.0.1")
+    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "5100"))
     app.run(host=host, port=port, debug=False, threaded=True)
